@@ -5,6 +5,7 @@ import com.shuzijun.leetcode.plugin.model.CodeTypeEnum;
 import com.shuzijun.leetcode.plugin.model.Config;
 import com.shuzijun.leetcode.plugin.model.Constant;
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
@@ -38,6 +39,34 @@ public class VelocityTool extends StringUtils {
             sb.append('0');
         }
         sb.append(s);
+        return sb.toString();
+    }
+
+    /**
+     * Adds a specified number of spaces as left padding to the beginning of each line in the input string.
+     *
+     * @param s      the input string to be padded; if null or empty, the method returns the input as is
+     * @param length the number of spaces to pad at the beginning of each line; if less than or equal to 0, no padding is applied
+     * @return a new string with the specified padding added to each line, or the original string if no padding was applied
+     */
+    public static String leftPadSpacesPerRow(String s, int length) {
+        if (s == null || s.isEmpty() || length <= 0) {
+            return s;
+        }
+        String padStr = " ".repeat(length);
+        StringBuilder sb = new StringBuilder(s.length() + (length * 2));
+        boolean lineStart = true;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (lineStart && ch != '\n' && ch != '\r') {
+                sb.append(padStr);
+                lineStart = false;
+            }
+            sb.append(ch);
+            if (ch == '\n' || ch == '\r') {
+                lineStart = true;
+            }
+        }
         return sb.toString();
     }
 
