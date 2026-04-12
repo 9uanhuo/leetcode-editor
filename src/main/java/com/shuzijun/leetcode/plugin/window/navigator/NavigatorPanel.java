@@ -103,7 +103,7 @@ public class NavigatorPanel extends SimpleToolWindowPanel implements NavigatorPa
                 ProgressManager.getInstance().run(new Task.Backgroundable(myProject, "Refresh data", false) {
                     @Override
                     public void run(@NotNull ProgressIndicator progressIndicator) {
-                        if (!project.equals(myProject) && myNavigatorAction.getPageInfo().getRowTotal() <= 0) {
+                        if (project != null && !project.equals(myProject) && myNavigatorAction.getPageInfo().getRowTotal() <= 0) {
                             return;
                         }
                         myNavigatorAction.resetServiceData();
@@ -116,7 +116,7 @@ public class NavigatorPanel extends SimpleToolWindowPanel implements NavigatorPa
                 ProgressManager.getInstance().run(new Task.Backgroundable(myProject, "Refresh data", false) {
                     @Override
                     public void run(@NotNull ProgressIndicator progressIndicator) {
-                        if (!project.equals(myProject) && myNavigatorAction.getPageInfo().getRowTotal() <= 0) {
+                        if (project != null && !project.equals(myProject) && myNavigatorAction.getPageInfo().getRowTotal() <= 0) {
                             return;
                         }
                         myNavigatorAction.resetServiceData();
