@@ -6,7 +6,6 @@ import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.editor.colors.EditorColors;
 import com.intellij.openapi.editor.colors.EditorColorsManager;
 import com.intellij.openapi.editor.colors.impl.EditorColorsSchemeImpl;
 import com.intellij.openapi.editor.markup.TextAttributes;
@@ -20,6 +19,7 @@ import com.intellij.openapi.util.io.FileUtilRt;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.JBColor;
+import com.intellij.ui.components.ScrollBarPainter;
 import com.intellij.ui.jcef.JCEFHtmlPanel;
 import com.intellij.util.Url;
 import com.intellij.util.Urls;
@@ -29,11 +29,17 @@ import com.intellij.util.ui.UIUtil;
 import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.utils.FileUtils;
 import com.shuzijun.leetcode.plugin.utils.PropertiesUtils;
-import io.netty.handler.codec.http.HttpHeaderNames;
+
 import org.apache.commons.lang3.StringUtils;
 import org.cef.browser.CefBrowser;
 import org.cef.browser.CefFrame;
-import org.cef.handler.*;
+import org.cef.handler.CefLifeSpanHandler;
+import org.cef.handler.CefLifeSpanHandlerAdapter;
+import org.cef.handler.CefRequestHandler;
+import org.cef.handler.CefRequestHandlerAdapter;
+import org.cef.handler.CefResourceHandler;
+import org.cef.handler.CefResourceRequestHandler;
+import org.cef.handler.CefResourceRequestHandlerAdapter;
 import org.cef.misc.BoolRef;
 import org.cef.network.CefRequest;
 import org.jetbrains.annotations.Nullable;
@@ -48,8 +54,13 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import io.netty.handler.codec.http.HttpHeaderNames;
 
 /**
  * @author shuzijun
@@ -219,9 +230,9 @@ public class LCVPanel extends JCEFHtmlPanel {
             EditorColorsSchemeImpl editorColorsScheme = (EditorColorsSchemeImpl) EditorColorsManager.getInstance().getGlobalScheme();
             Color defaultBackground = editorColorsScheme.getDefaultBackground();
 
-            Color scrollbarThumbColor = EditorColors.SCROLLBAR_THUMB_COLOR.getDefaultColor();
-            if (editorColorsScheme.getColor(EditorColors.SCROLLBAR_THUMB_COLOR) != null) {
-                scrollbarThumbColor = editorColorsScheme.getColor(EditorColors.SCROLLBAR_THUMB_COLOR);
+            Color scrollbarThumbColor = ScrollBarPainter.THUMB_OPAQUE_BACKGROUND.getDefaultColor();
+            if (editorColorsScheme.getColor(ScrollBarPainter.THUMB_OPAQUE_BACKGROUND) != null) {
+                scrollbarThumbColor = editorColorsScheme.getColor(ScrollBarPainter.THUMB_OPAQUE_BACKGROUND);
             }
             TextAttributes textAttributes = editorColorsScheme.getDirectlyDefinedAttributes().get("TEXT");
             Color text = null;
