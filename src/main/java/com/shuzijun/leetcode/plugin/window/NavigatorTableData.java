@@ -1,5 +1,6 @@
 package com.shuzijun.leetcode.plugin.window;
 
+import com.intellij.DynamicBundle;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.progress.ProgressIndicator;
@@ -19,13 +20,9 @@ import com.shuzijun.leetcode.plugin.model.PageInfo;
 import com.shuzijun.leetcode.plugin.model.Question;
 import com.shuzijun.leetcode.plugin.utils.LogUtils;
 import com.shuzijun.leetcode.plugin.window.navigator.TopNavigatorTable;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableCellRenderer;
-import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseEvent;
@@ -35,6 +32,13 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.StyledDocument;
 
 /**
  * @author shuzijun
@@ -187,7 +191,7 @@ public abstract class NavigatorTableData<T> extends JPanel implements Disposable
     }
 
     protected JTextPane createTip(String type, List<Icon> icons, List<MyStyle> styleList) {
-        String cn = Locale.getDefault().getLanguage().equals(Locale.CHINESE.getLanguage()) ? "_cn" : "";
+        String cn = DynamicBundle.getLocale().getLanguage().equals(Locale.CHINESE.getLanguage()) ? "_cn" : "";
         JTextPane myPane = new JTextPane();
         myPane.setOpaque(false);
         try (InputStream inputStream = Graphql.GraphqlBuilder.class.getResourceAsStream("/template/" + type + cn + ".txt")) {
