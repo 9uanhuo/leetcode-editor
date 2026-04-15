@@ -24,8 +24,8 @@ import com.intellij.ui.jcef.JCEFHtmlPanel;
 import com.intellij.util.Url;
 import com.intellij.util.Urls;
 import com.intellij.util.io.HttpRequests;
+import com.intellij.util.io.HttpRequests.RequestProcessor;
 import com.intellij.util.io.URLUtil;
-import com.intellij.util.ui.UIUtil;
 import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.utils.FileUtils;
 import com.shuzijun.leetcode.plugin.utils.PropertiesUtils;
@@ -128,18 +128,15 @@ public class LCVPanel extends JCEFHtmlPanel {
                         try {
                             return HttpRequests.request(request.getURL())
                                     .throwStatusCodeException(false)
-                                    .connect(new HttpRequests.RequestProcessor<CefResourceHandler>() {
-                                        @Override
-                                        public CefResourceHandler process(HttpRequests.Request request) throws IOException {
-                                            HttpURLConnection urlConnection = (HttpURLConnection) request.getConnection();
-                                            Map<String, String> header = new HashMap<>();
-                                            urlConnection.getHeaderFields().forEach((key, values) -> {
-                                                if (key != null && values != null && !headers.contains(key.toLowerCase())) {
-                                                    header.put(key, StringUtils.join(values.toArray(), ";"));
-                                                }
-                                            });
-                                            return new ProxyLoadHtmlResourceHandler(request.readString(), header, urlConnection.getResponseCode());
-                                        }
+                                    .connect((RequestProcessor<CefResourceHandler>) request1 -> {
+                                        HttpURLConnection urlConnection = (HttpURLConnection) request1.getConnection();
+                                        Map<String, String> header = new HashMap<>();
+                                        urlConnection.getHeaderFields().forEach((key, values) -> {
+                                            if (key != null && values != null && !headers.contains(key.toLowerCase())) {
+                                                header.put(key, StringUtils.join(values.toArray(), ";"));
+                                            }
+                                        });
+                                        return new ProxyLoadHtmlResourceHandler(request1.readString(), header, urlConnection.getResponseCode());
                                     });
                         } catch (IOException io) {
 
@@ -184,10 +181,8 @@ public class LCVPanel extends JCEFHtmlPanel {
                     VirtualFile vf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file);
                     FileEditor[] editors = FileEditorManager.getInstance(project).openFile(vf, false);
                     if (editors == null || editors.length == 0) {
-                        FileType fileType = FileTypeChooser.getKnownFileTypeOrAssociate(vf, project);
-                        if (fileType == null || fileType == FileTypes.UNKNOWN) {
-                            return;
-                        } else {
+                        FileType fileType = FileTypeChooser.getKnownFileTypeOrAssociate(vf.getName());
+                        if (fileType != null && fileType != FileTypes.UNKNOWN) {
                             FileEditorManager.getInstance(project).openFile(vf, false);
                         }
                     }
@@ -210,7 +205,7 @@ public class LCVPanel extends JCEFHtmlPanel {
                     .replace("{{serverToken}}", org.apache.commons.lang3.StringUtils.isNotBlank(servicePath.getParameters()) ? servicePath.getParameters().substring(1) : "")
                     .replace("{{fileValue}}", text)
                     .replace("{{Lang}}", PropertiesUtils.getInfo("Lang"))
-                    .replace("{{darcula}}", UIUtil.isUnderDarcula() + "")
+                    .replace("{{darcula}}", !JBColor.isBright() + "")
                     .replace("{{ideStyle}}", getStyle(true))
                     ;
         } catch (IOException e) {
@@ -243,7 +238,7 @@ public class LCVPanel extends JCEFHtmlPanel {
                     "\"Hiragino Sans GB\",\"Microsoft Yahei\",sans-serif,\"Apple Color Emoji\",\"Segoe UI Emoji\",\"Noto Color Emoji\",\"Segoe UI Symbol\"," +
                     "\"Android Emoji\",\"EmojiSymbols\";";
             StringBuilder sb = new StringBuilder(isTag ? "<style id=\"ideaStyle\">" : "");
-            sb.append(UIUtil.isUnderDarcula() ? ".vditor--dark" : ".vditor").append("{--panel-background-color:").append(toHexColor(defaultBackground))
+            sb.append(!JBColor.isBright() ? ".vditor--dark" : ".vditor").append("{--panel-background-color:").append(toHexColor(defaultBackground))
                     .append(";--textarea-background-color:").append(toHexColor(defaultBackground)).append(";");
             sb.append("--toolbar-background-color:").append(toHexColor(JBColor.background())).append(";");
             sb.append("}");
@@ -275,6 +270,6 @@ public class LCVPanel extends JCEFHtmlPanel {
     public void updateStyle() {
         String style = getStyle(false);
         getCefBrowser().executeJavaScript(
-                "updateStyle('" + style + "'," + UIUtil.isUnderDarcula() + ");", getCefBrowser().getURL(), 0);
+                "updateStyle('" + style + "'," + !JBColor.isBright() + ");", getCefBrowser().getURL(), 0);
     }
 }

@@ -5,23 +5,23 @@ import com.intellij.ide.util.PropertiesComponent
 import com.intellij.openapi.extensions.PluginId
 import com.intellij.openapi.fileEditor.impl.HTMLEditorProvider
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 import com.shuzijun.leetcode.plugin.model.PluginConstant
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig
 
 /**
  * @author shuzijun
  */
-class RegisterPluginInstallerStateListener : StartupActivity {
-    override fun runActivity(project: Project) {
+class RegisterPluginInstallerStateListener : ProjectActivity {
+    override suspend fun execute(project: Project) {
         val newVersion = getPlugin(PluginId.getId(PluginConstant.PLUGIN_ID))!!.version
         val config = PersistentConfig.getInstance().initConfig
         val oldVersion: String?
         if (config == null) {
             oldVersion = PropertiesComponent.getInstance()
-                .getValue(ShowNewHTMLEditorKey)
+                .getValue(SHOW_NEW_HTML_EDITOR_KEY)
             PropertiesComponent.getInstance()
-                .setValue(ShowNewHTMLEditorKey, newVersion)
+                .setValue(SHOW_NEW_HTML_EDITOR_KEY, newVersion)
         } else {
             oldVersion = config.pluginVersion
             config.pluginVersion = newVersion
@@ -31,10 +31,10 @@ class RegisterPluginInstallerStateListener : StartupActivity {
             HTMLEditorProvider.openEditor(
                 project,
                 "What's New in " + PluginConstant.PLUGIN_ID,
-                CHANGELOGURL,
+                CHANGELOG_URL,
                 "'<div style='text-align: center;padding-top: 3rem'>" +
                         "<div style='padding-top: 1rem; margin-bottom: 0.8rem;'>Failed to load!</div>" +
-                        "'<div><a href='" + CHANGELOGURL + "' target='_blank'" +
+                        "'<div><a href='" + CHANGELOG_URL + "' target='_blank'" +
                         "style='font-size: 2rem'>Open in browser</a></div>" +
                         "</div>"
             )
@@ -42,9 +42,10 @@ class RegisterPluginInstallerStateListener : StartupActivity {
     }
 
     companion object {
-        private const val ShowNewHTMLEditorKey = PluginConstant.PLUGIN_ID + "ShowNewHTMLEditor"
+        private const val SHOW_NEW_HTML_EDITOR_KEY = PluginConstant.PLUGIN_ID + "ShowNewHTMLEditor"
 
-        private const val CHANGELOGURL = "https://github.com/shuzijun/leetcode-editor/blob/master/CHANGELOG.md"
+        private const val CHANGELOG_URL =
+            "https://github.com/shuzijun/leetcode-editor/blob/master/CHANGELOG.md"
     }
 
 }

@@ -2,7 +2,7 @@ package com.shuzijun.leetcode.plugin.actions.toolbar;
 
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.project.DumbAware;
 import com.shuzijun.leetcode.plugin.actions.AbstractAction;
 import com.shuzijun.leetcode.plugin.manager.NavigatorAction;
@@ -12,22 +12,29 @@ import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.model.Sort;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
 import com.shuzijun.leetcode.plugin.window.WindowFactory;
-import icons.LeetCodeEditorIcons;
+
 import org.jetbrains.annotations.NotNull;
+
+import icons.LeetCodeEditorIcons;
 
 /**
  * @author shuzijun
  */
 public class SortAction extends AbstractAction implements DumbAware {
 
-    @Override
-    public boolean displayTextInToolbar() {
-        return true;
+    public SortAction() {
+        getTemplatePresentation().putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
     }
 
     @Override
     public void update(@NotNull AnActionEvent e) {
-        NavigatorAction navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        if (e.getProject() == null) {
+            return;
+        }
+        NavigatorAction<?> navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        if (navigatorAction == null) {
+            return;
+        }
         Sort sort = getSort(e, navigatorAction);
         if (sort == null) {
             return;
@@ -57,18 +64,19 @@ public class SortAction extends AbstractAction implements DumbAware {
         navigatorAction.sort(sort);
     }
 
-    private Sort getSort(AnActionEvent anActionEvent, NavigatorAction navigatorAction) {
+    private Sort getSort(AnActionEvent anActionEvent, NavigatorAction<?> navigatorAction) {
         return navigatorAction.getFind().getSort(getKey(anActionEvent));
     }
 
     private String getKey(AnActionEvent anActionEvent) {
-        return anActionEvent.getActionManager().getId(this).replace(PluginConstant.LEETCODE_SORT_PREFIX, "")
+        return anActionEvent.getActionManager().getId(this)
+                .replace(PluginConstant.LEETCODE_SORT_PREFIX, "")
                 .replace(PluginConstant.LEETCODE_CODETOP_SORT_PREFIX, "")
                 .replace(PluginConstant.LEETCODE_ALL_SORT_PREFIX, "");
     }
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return  ActionUpdateThread.EDT;
+        return ActionUpdateThread.EDT;
     }
 }

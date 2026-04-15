@@ -16,7 +16,9 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.ui.components.JBPasswordField;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
-import com.intellij.util.net.HttpConfigurable;
+import com.intellij.util.net.ProxyConfiguration.DirectProxy;
+import com.intellij.util.net.ProxySettings;
+import com.intellij.util.net.ProxyUtils;
 import com.shuzijun.leetcode.plugin.listener.ColorListener;
 import com.shuzijun.leetcode.plugin.listener.ConfigNotifier;
 import com.shuzijun.leetcode.plugin.listener.DonateListener;
@@ -27,14 +29,16 @@ import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.utils.MTAUtils;
 import com.shuzijun.leetcode.plugin.utils.PropertiesUtils;
 import com.shuzijun.leetcode.plugin.utils.URLUtils;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+
+import javax.swing.*;
 
 /**
  * @author shuzijun
@@ -93,12 +97,12 @@ public class SettingUI {
         });
 
         customCodeBox.addActionListener(new DonateListener(customCodeBox));
-        proxyCheckBox.setSelected(HttpConfigurable.getInstance().USE_HTTP_PROXY || HttpConfigurable.getInstance().USE_PROXY_PAC);
+        proxyCheckBox.setSelected(!(ProxySettings.getInstance().getProxyConfiguration() instanceof DirectProxy));
         proxyCheckBox.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (HttpConfigurable.editConfigurable(mainPanel)) {
-                    proxyCheckBox.setSelected(HttpConfigurable.getInstance().USE_HTTP_PROXY || HttpConfigurable.getInstance().USE_PROXY_PAC);
+                if (ProxyUtils.editConfigurable(ProxySettings.getInstance(), proxyCheckBox)) {
+                    proxyCheckBox.setSelected(!(ProxySettings.getInstance().getProxyConfiguration() instanceof DirectProxy));
                 }
             }
         });
@@ -237,11 +241,8 @@ public class SettingUI {
             Config currentState = new Config();
             process(currentState);
             if (currentState.isModified(config)) {
-                if (passwordField.getText() != null && passwordField.getText().equals(PersistentConfig.getInstance().getPassword(config.getLoginName()))) {
-                    return false;
-                } else {
-                    return true;
-                }
+                return passwordField.getPassword() == null
+                        || !new String(passwordField.getPassword()).equals(PersistentConfig.getInstance().getPassword(config.getLoginName()));
             } else {
                 return true;
             }
@@ -263,7 +264,7 @@ public class SettingUI {
             file.mkdirs();
         }
         PersistentConfig.getInstance().setInitConfig(config);
-        PersistentConfig.getInstance().savePassword(passwordField.getText(), config.getLoginName());
+        PersistentConfig.getInstance().savePassword(new String(passwordField.getPassword()), config.getLoginName());
         Config finalOldConfig = oldConfig;
         Config finalConfig = config;
         ProgressManager.getInstance().run(new Task.Backgroundable(null, PluginConstant.PLUGIN_NAME + " Apply Config", false) {

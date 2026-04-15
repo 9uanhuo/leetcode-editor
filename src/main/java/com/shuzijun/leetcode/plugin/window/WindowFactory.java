@@ -14,12 +14,14 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig;
-import icons.LeetCodeEditorIcons;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
+
+import icons.LeetCodeEditorIcons;
 
 /**
  * @author shuzijun
@@ -57,12 +59,12 @@ public class WindowFactory implements ToolWindowFactory, DumbAware {
         if (navigatorContentManager == null) {
             return DataContext.EMPTY_CONTEXT;
         }
-        Content navigatorContent= navigatorContentManager.getContent(0);
+        Content navigatorContent = navigatorContentManager.getContent(0);
         if (navigatorContent == null) {
             return DataContext.EMPTY_CONTEXT;
         }
-        JComponent navigatorPanel =  navigatorContent.getComponent();
-        if (navigatorPanel instanceof DataProvider){
+        JComponent navigatorPanel = navigatorContent.getComponent();
+        if (navigatorPanel instanceof DataProvider) {
             return new MyDataContext((DataProvider) navigatorPanel);
         }
 
@@ -72,6 +74,9 @@ public class WindowFactory implements ToolWindowFactory, DumbAware {
     public static void updateTitle(@NotNull Project project, String userName) {
         ToolWindow leetcodeToolWindows = ToolWindowManager.getInstance(project).getToolWindow(ID);
         ApplicationManager.getApplication().invokeLater(() -> {
+            if (leetcodeToolWindows == null) {
+                return;
+            }
             if (StringUtils.isNotBlank(userName)) {
                 leetcodeToolWindows.setTitle("[" + userName + "]");
             } else {
@@ -86,7 +91,7 @@ public class WindowFactory implements ToolWindowFactory, DumbAware {
         leetcodeToolWindows.activate(null);
     }
 
-    public static class  MyDataContext implements DataContext{
+    public static class MyDataContext implements DataContext {
         private final DataProvider dataProvider;
 
         public MyDataContext(DataProvider dataProvider) {

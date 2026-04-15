@@ -17,6 +17,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.function.BiConsumer;
 
 /**
@@ -217,9 +218,9 @@ public class CodeManager {
                             if (jsonObject.getBoolean("run_success")) {
                                 if (Integer.valueOf(10).equals(jsonObject.getInteger("status_code"))) {
                                     String runtime = jsonObject.getString("status_runtime");
-                                    String runtimePercentile = jsonObject.getBigDecimal("runtime_percentile").setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                                    String runtimePercentile = jsonObject.getBigDecimal("runtime_percentile").setScale(2, RoundingMode.HALF_UP).toString();
                                     String memory = jsonObject.getString("status_memory");
-                                    String memoryPercentile = jsonObject.getBigDecimal("memory_percentile").setScale(2, BigDecimal.ROUND_HALF_UP).toString();
+                                    String memoryPercentile = jsonObject.getBigDecimal("memory_percentile").setScale(2, RoundingMode.HALF_UP).toString();
 
                                     MessageUtils.getInstance(project).showInfoMsg("", PropertiesUtils.getInfo("submit.success", runtime, runtimePercentile, codeTypeEnum.getType(), memory, memoryPercentile, codeTypeEnum.getType()));
                                     question.setStatus("ac");

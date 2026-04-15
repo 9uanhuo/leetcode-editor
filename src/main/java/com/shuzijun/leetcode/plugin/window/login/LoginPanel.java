@@ -221,8 +221,8 @@ public class LoginPanel extends DialogWrapper {
         @Override
         public void dispose() {
             getJBCefClient().removeLoadHandler(cefLoadHandler, getCefBrowser());
-            getJBCefBrowser(getCefBrowser()).getJBCefCookieManager().deleteCookies(URLUtils.leetcode, false);
-            getJBCefBrowser(getCefBrowser()).getJBCefCookieManager().deleteCookies(URLUtils.leetcodecn, false);
+            getJBCefBrowser(getCefBrowser()).getJBCefCookieManager().deleteCookies(URLUtils.leetcode, "");
+            getJBCefBrowser(getCefBrowser()).getJBCefCookieManager().deleteCookies(URLUtils.leetcodecn, "");
             super.dispose();
         }
     }

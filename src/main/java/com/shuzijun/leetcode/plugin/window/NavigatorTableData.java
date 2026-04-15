@@ -159,7 +159,7 @@ public abstract class NavigatorTableData<T> extends JPanel implements Disposable
     }
 
     public boolean selectedRow(String titleSlug) {
-        if (myList == null || myList.size() == 0) {
+        if (myList == null || myList.isEmpty()) {
             return false;
         }
         for (int i = 0; i < myList.size(); i++) {

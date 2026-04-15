@@ -23,6 +23,7 @@ import com.shuzijun.leetcode.plugin.utils.URLUtils;
 import com.shuzijun.leetcode.plugin.window.navigator.AllNavigatorPanel;
 import com.shuzijun.leetcode.plugin.window.navigator.NavigatorPanel;
 import com.shuzijun.leetcode.plugin.window.navigator.TopNavigatorPanel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -228,7 +229,7 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
                 } else {
                     break;
                 }
-                if(i == 50){
+                if (i == 50) {
                     LogUtils.LOG.warn("User data is not synchronized");
                 }
             }
@@ -244,10 +245,10 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
     public static class DisposableMap<K, V> extends HashMap implements Disposable {
         @Override
         public synchronized Object put(Object key, Object value) {
-            return super.put(key,value);
+            return super.put(key, value);
         }
 
-        public synchronized K getOtherKey(K key){
+        public synchronized K getOtherKey(K key) {
             K otherKey = null;
             for (Object k : this.keySet()) {
                 if (!k.equals(key)) {

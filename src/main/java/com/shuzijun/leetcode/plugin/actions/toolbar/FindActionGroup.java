@@ -5,6 +5,7 @@ import com.intellij.openapi.actionSystem.ActionGroup;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.ex.ActionUtil;
 import com.intellij.openapi.project.DumbAware;
 import com.shuzijun.leetcode.plugin.manager.NavigatorAction;
 import com.shuzijun.leetcode.plugin.model.Constant;
@@ -13,27 +14,31 @@ import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
 import com.shuzijun.leetcode.plugin.window.WindowFactory;
-import icons.LeetCodeEditorIcons;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+
+import icons.LeetCodeEditorIcons;
 
 /**
  * @author shuzijun
  */
 public class FindActionGroup extends ActionGroup implements DumbAware {
 
-    private int i = 0;
-
-    @Override
-    public boolean displayTextInToolbar() {
-        return true;
+    public FindActionGroup() {
+        getTemplatePresentation().putClientProperty(ActionUtil.SHOW_TEXT_IN_TOOLBAR, true);
     }
 
     @Override
     public void update(AnActionEvent e) {
-        NavigatorAction navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
-
+        if (e.getProject() == null) {
+            return;
+        }
+        NavigatorAction<?> navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        if (navigatorAction == null) {
+            return;
+        }
         String id = e.getActionManager().getId(this);
         List<Tag> tags = getTags(id, navigatorAction.getFind());
 
@@ -100,6 +105,6 @@ public class FindActionGroup extends ActionGroup implements DumbAware {
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return  ActionUpdateThread.EDT;
+        return ActionUpdateThread.EDT;
     }
 }

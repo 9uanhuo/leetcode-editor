@@ -7,7 +7,7 @@
     </vendor>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/build_number_ranges.html for description -->
-    <idea-version since-build="223"/>
+    <idea-version since-build="251"/>
 
     <!-- please see http://www.jetbrains.org/intellij/sdk/docs/basics/getting_started/plugin_compatibility.html
          on how to target different products -->
@@ -19,10 +19,10 @@
         <postStartupActivity
                 implementation="com.shuzijun.leetcode.plugin.listener.RegisterPluginInstallerStateListener"/>
         <errorHandler implementation="com.shuzijun.leetcode.plugin.listener.ErrorReportHandler"/>
-        <toolWindow id="Leetcode" secondary="false" icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW"
+        <toolWindow id="LeetCode" secondary="false" icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW"
                     anchor="left"
                     factoryClass="com.shuzijun.leetcode.plugin.window.WindowFactory"/>
-        <toolWindow id="Leetcode Console" secondary="false"
+        <toolWindow id="LeetCode Console" secondary="false"
                     icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW" anchor="bottom"
                     factoryClass="com.shuzijun.leetcode.plugin.window.ConsoleWindowFactory"/>
         <applicationService
