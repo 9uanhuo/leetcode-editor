@@ -9,7 +9,6 @@ import com.shuzijun.leetcode.plugin.model.Config;
 import com.shuzijun.leetcode.plugin.model.Question;
 import com.shuzijun.leetcode.plugin.model.QuestionView;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
 
 /**
  * @author shuzijun
@@ -18,7 +17,7 @@ public abstract class AbstractTreeAction extends AbstractAction implements DumbA
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent, Config config) {
-        NavigatorAction<QuestionView> navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction<QuestionView> navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         if (navigatorAction == null) {
             return;
         }

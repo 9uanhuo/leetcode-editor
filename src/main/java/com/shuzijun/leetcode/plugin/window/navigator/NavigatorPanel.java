@@ -22,18 +22,28 @@ import com.shuzijun.leetcode.plugin.manager.FindManager;
 import com.shuzijun.leetcode.plugin.manager.NavigatorAction;
 import com.shuzijun.leetcode.plugin.manager.QuestionManager;
 import com.shuzijun.leetcode.plugin.manager.ViewManager;
-import com.shuzijun.leetcode.plugin.model.*;
+import com.shuzijun.leetcode.plugin.model.Config;
+import com.shuzijun.leetcode.plugin.model.Constant;
+import com.shuzijun.leetcode.plugin.model.Find;
+import com.shuzijun.leetcode.plugin.model.PageInfo;
+import com.shuzijun.leetcode.plugin.model.PluginConstant;
+import com.shuzijun.leetcode.plugin.model.QuestionIndex;
+import com.shuzijun.leetcode.plugin.model.QuestionView;
+import com.shuzijun.leetcode.plugin.model.Sort;
+import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.URLUtils;
 import com.shuzijun.leetcode.plugin.window.NavigatorPanelAction;
 import com.shuzijun.leetcode.plugin.window.NavigatorTableData;
+
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.*;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.Map;
+
+import javax.swing.*;
 
 /**
  * @author shuzijun
@@ -251,11 +261,6 @@ public class NavigatorPanel extends SimpleToolWindowPanel implements NavigatorPa
                 return selectedRow(slug);
             }
         };
-    }
-
-    @Override
-    public Object getData(String dataId) {
-        return super.getData(dataId);
     }
 
     @Override

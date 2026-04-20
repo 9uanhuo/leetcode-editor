@@ -13,7 +13,6 @@ import com.shuzijun.leetcode.plugin.model.Find;
 import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -35,7 +34,7 @@ public class FindActionGroup extends ActionGroup implements DumbAware {
         if (e.getProject() == null) {
             return;
         }
-        NavigatorAction<?> navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction<?> navigatorAction = e.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         if (navigatorAction == null) {
             return;
         }
@@ -58,7 +57,7 @@ public class FindActionGroup extends ActionGroup implements DumbAware {
     public AnAction[] getChildren(AnActionEvent anActionEvent) {
         List<AnAction> anActionList = Lists.newArrayList();
         String id = anActionEvent.getActionManager().getId(this);
-        NavigatorAction navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         List<Tag> tags = getTags(id, navigatorAction.getFind());
 
         if (tags != null && !tags.isEmpty()) {

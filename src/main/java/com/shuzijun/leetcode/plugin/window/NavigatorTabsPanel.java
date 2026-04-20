@@ -1,6 +1,7 @@
 package com.shuzijun.leetcode.plugin.window;
 
 import com.intellij.openapi.Disposable;
+import com.intellij.openapi.actionSystem.DataSink;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.project.ProjectManager;
@@ -156,23 +157,15 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
     }
 
     @Override
-    public Object getData(String dataId) {
+    public void uiDataSnapshot(@NotNull DataSink sink) {
         for (SimpleToolWindowPanel navigatorPanel : navigatorPanels) {
-            Object object = navigatorPanel.getData(dataId);
-            if (object != null) {
-                return object;
-            }
+            navigatorPanel.uiDataSnapshot(sink);
         }
-        if (DataKeys.LEETCODE_PROJECTS_TABS.is(dataId)) {
-            return this;
+        sink.set(DataKeys.LEETCODE_PROJECTS_TABS, this);
+        SimpleToolWindowPanel panel = navigatorPanels[toggleIndex];
+        if (panel instanceof NavigatorPanelAction) {
+            sink.set(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION, ((NavigatorPanelAction) panel).getNavigatorAction());
         }
-        if (DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION.is(dataId)) {
-            SimpleToolWindowPanel panel = navigatorPanels[toggleIndex];
-            if (panel instanceof NavigatorPanelAction) {
-                return ((NavigatorPanelAction) panel).getNavigatorAction();
-            }
-        }
-        return super.getData(dataId);
     }
 
     @Override

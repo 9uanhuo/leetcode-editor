@@ -15,14 +15,24 @@ import com.shuzijun.leetcode.plugin.listener.AllQuestionNotifier;
 import com.shuzijun.leetcode.plugin.listener.ConfigNotifier;
 import com.shuzijun.leetcode.plugin.manager.CodeTopManager;
 import com.shuzijun.leetcode.plugin.manager.NavigatorAction;
-import com.shuzijun.leetcode.plugin.model.*;
+import com.shuzijun.leetcode.plugin.model.CodeTopQuestionView;
+import com.shuzijun.leetcode.plugin.model.Config;
+import com.shuzijun.leetcode.plugin.model.Constant;
+import com.shuzijun.leetcode.plugin.model.Find;
+import com.shuzijun.leetcode.plugin.model.PageInfo;
+import com.shuzijun.leetcode.plugin.model.PluginConstant;
+import com.shuzijun.leetcode.plugin.model.QuestionView;
+import com.shuzijun.leetcode.plugin.model.Sort;
+import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.URLUtils;
 import com.shuzijun.leetcode.plugin.window.NavigatorPanelAction;
 import com.shuzijun.leetcode.plugin.window.NavigatorTableData;
+
 import org.apache.commons.collections.map.HashedMap;
 
-import javax.swing.*;
 import java.util.Map;
+
+import javax.swing.*;
 
 /**
  * @author shuzijun
@@ -182,11 +192,6 @@ public class TopNavigatorPanel extends SimpleToolWindowPanel implements Navigato
                 }
             }
         };
-    }
-
-    @Override
-    public Object getData(String dataId) {
-        return super.getData(dataId);
     }
 
     private void initFind() {

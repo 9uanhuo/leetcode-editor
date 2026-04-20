@@ -10,10 +10,14 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.shuzijun.leetcode.plugin.manager.ArticleManager;
 import com.shuzijun.leetcode.plugin.manager.NavigatorAction;
 import com.shuzijun.leetcode.plugin.manager.QuestionManager;
-import com.shuzijun.leetcode.plugin.model.*;
+import com.shuzijun.leetcode.plugin.model.Config;
+import com.shuzijun.leetcode.plugin.model.Constant;
+import com.shuzijun.leetcode.plugin.model.Question;
+import com.shuzijun.leetcode.plugin.model.QuestionView;
+import com.shuzijun.leetcode.plugin.model.Solution;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
 import com.shuzijun.leetcode.plugin.window.dialog.SolutionPanel;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.awt.event.KeyAdapter;
@@ -29,7 +33,7 @@ public class OpenSolutionAction extends AbstractTreeAction {
 
     @Override
     public void update(@NotNull AnActionEvent anActionEvent) {
-        NavigatorAction<QuestionView> navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction<QuestionView> navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         if (navigatorAction == null) {
             anActionEvent.getPresentation().setEnabled(false);
             return;

@@ -15,7 +15,7 @@ import com.shuzijun.leetcode.plugin.model.Question;
 import com.shuzijun.leetcode.plugin.model.QuestionView;
 import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,12 +34,12 @@ public class FavoriteAction extends ToggleAction implements DumbAware {
     @Override
     public boolean isSelected(AnActionEvent anActionEvent) {
 
-        NavigatorAction<QuestionView> navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction<QuestionView> navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         final QuestionView questionView = navigatorAction.getSelectedRowData();
         if (questionView == null) {
             return false;
         }
-        Question cacheQuestion = QuestionManager.getQuestionByTitleSlug(questionView.getTitleSlug(), anActionEvent.getProject(),true);
+        Question cacheQuestion = QuestionManager.getQuestionByTitleSlug(questionView.getTitleSlug(), anActionEvent.getProject(), true);
         if (cacheQuestion == null) {
             return false;
         }
@@ -48,7 +48,7 @@ public class FavoriteAction extends ToggleAction implements DumbAware {
 
     @Override
     public void setSelected(AnActionEvent anActionEvent, boolean b) {
-        NavigatorAction<QuestionView> navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction<QuestionView> navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         QuestionView questionView = navigatorAction.getSelectedRowData();
         if (questionView == null) {
             return;
@@ -69,6 +69,6 @@ public class FavoriteAction extends ToggleAction implements DumbAware {
 
     @Override
     public @NotNull ActionUpdateThread getActionUpdateThread() {
-        return  ActionUpdateThread.BGT;
+        return ActionUpdateThread.BGT;
     }
 }

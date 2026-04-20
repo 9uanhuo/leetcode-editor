@@ -16,12 +16,13 @@ import com.shuzijun.leetcode.plugin.utils.HttpRequestUtils;
 import com.shuzijun.leetcode.plugin.utils.MessageUtils;
 import com.shuzijun.leetcode.plugin.utils.PropertiesUtils;
 import com.shuzijun.leetcode.plugin.window.ProgressPanel;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.swing.*;
 
 /**
  * @author shuzijun
@@ -53,7 +54,7 @@ public class ProgressAction extends AbstractAction implements DumbAware {
                 return;
             } else {
                 if (SessionManager.switchSession(anActionEvent.getProject(), session.getId())) {
-                    NavigatorAction navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+                    NavigatorAction navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
                     navigatorAction.getFind().operationType("");
                     navigatorAction.findClear();
                     StatisticsData.refresh(anActionEvent.getProject());

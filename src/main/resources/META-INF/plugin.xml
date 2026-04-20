@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>leetcode-editor</id>
     <name>LeetCode Editor</name>
-    <version>8.17</version>
+    <version>8.16</version>
     <vendor email="shuzijun0109@gmail.com" url="https://github.com/shuzijun/leetcode-editor">
         shuzijun
     </vendor>
@@ -19,10 +19,10 @@
         <postStartupActivity
                 implementation="com.shuzijun.leetcode.plugin.listener.RegisterPluginInstallerStateListener"/>
         <errorHandler implementation="com.shuzijun.leetcode.plugin.listener.ErrorReportHandler"/>
-        <toolWindow id="LeetCode" secondary="false" icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW"
+        <toolWindow id="Leetcode" secondary="false" icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW"
                     anchor="left"
                     factoryClass="com.shuzijun.leetcode.plugin.window.WindowFactory"/>
-        <toolWindow id="LeetCode Console" secondary="false"
+        <toolWindow id="Leetcode Console" secondary="false"
                     icon="LeetCodeEditorIcons.LEETCODE_TOOL_WINDOW" anchor="bottom"
                     factoryClass="com.shuzijun.leetcode.plugin.window.ConsoleWindowFactory"/>
         <applicationService

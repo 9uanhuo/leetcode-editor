@@ -25,7 +25,7 @@ public class PositionAction extends AbstractEditAction {
         if (e.getProject() == null) {
             return;
         }
-        NavigatorAction navigatorAction = WindowFactory.getDataContext(e.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction navigatorAction = e.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         if (navigatorAction ==null || !navigatorAction.position(null)) {
             e.getPresentation().setEnabled(false);
             return;
@@ -45,7 +45,7 @@ public class PositionAction extends AbstractEditAction {
 
     @Override
     public void actionPerformed(AnActionEvent anActionEvent, Config config, Question question) {
-        NavigatorAction navigatorAction = WindowFactory.getDataContext(anActionEvent.getProject()).getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
+        NavigatorAction navigatorAction = anActionEvent.getData(DataKeys.LEETCODE_PROJECTS_NAVIGATORACTION);
         if (navigatorAction == null) {
             return;
         }
