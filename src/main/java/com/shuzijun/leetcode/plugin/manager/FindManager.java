@@ -8,7 +8,7 @@ import com.shuzijun.leetcode.plugin.model.Constant;
 import com.shuzijun.leetcode.plugin.model.HttpRequest;
 import com.shuzijun.leetcode.plugin.model.Tag;
 import com.shuzijun.leetcode.plugin.utils.*;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
+import com.shuzijun.leetcode.plugin.setting.UserContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -73,7 +73,7 @@ public class FindManager {
         List<Tag> tags = new ArrayList<>();
 
         HttpResponse response =  HttpRequest.builderGet(URLUtils.getLeetcodeFavorites())
-                .cacheParam(WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser().getUsername()).request();
+                .cacheParam(UserContext.getInstance(project).getUser().getUsername()).request();
         if (response.getStatusCode() == 200) {
             try {
                 String body = response.getBody();

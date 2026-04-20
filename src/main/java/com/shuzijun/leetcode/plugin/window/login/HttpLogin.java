@@ -14,9 +14,9 @@ import com.shuzijun.leetcode.plugin.model.HttpRequest;
 import com.shuzijun.leetcode.plugin.model.PluginConstant;
 import com.shuzijun.leetcode.plugin.model.User;
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig;
+import com.shuzijun.leetcode.plugin.setting.UserContext;
 import com.shuzijun.leetcode.plugin.utils.*;
 import com.shuzijun.leetcode.plugin.window.NavigatorTabsPanel;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -108,7 +108,7 @@ public class HttpLogin {
             @Override
             public void run() {
                 try {
-                    User user = WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser();
+                    User user = UserContext.getInstance(project).getUser();
                     if (user.isVerified() || user.isPhoneVerified()) {
                         return;
                     }

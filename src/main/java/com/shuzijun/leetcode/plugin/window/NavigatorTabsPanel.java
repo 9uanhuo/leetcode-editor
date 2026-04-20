@@ -3,6 +3,7 @@ package com.shuzijun.leetcode.plugin.window;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
@@ -17,6 +18,7 @@ import com.shuzijun.leetcode.plugin.model.Config;
 import com.shuzijun.leetcode.plugin.model.User;
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig;
 import com.shuzijun.leetcode.plugin.setting.StatisticsData;
+import com.shuzijun.leetcode.plugin.setting.UserContext;
 import com.shuzijun.leetcode.plugin.utils.DataKeys;
 import com.shuzijun.leetcode.plugin.utils.LogUtils;
 import com.shuzijun.leetcode.plugin.utils.URLUtils;
@@ -26,24 +28,12 @@ import com.shuzijun.leetcode.plugin.window.navigator.TopNavigatorPanel;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-
 /**
  * @author shuzijun
  */
 public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposable {
 
-    private static final DisposableMap<String, NavigatorTabsPanel> NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP = new DisposableMap<>();
-
-    static {
-        Disposer.register(ApplicationManager.getApplication(), NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP);
-    }
-
-    private String id = UUID.randomUUID().toString();
+    private final Project project;
 
     private SimpleToolWindowPanel[] navigatorPanels;
     private TabInfo[] tabInfos;
@@ -52,10 +42,9 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
 
     private int toggleIndex = 0;
 
-    private volatile Map<String, User> userCache = new ConcurrentHashMap<>();
-
     public NavigatorTabsPanel(ToolWindow toolWindow, Project project) {
         super(Boolean.TRUE, Boolean.TRUE);
+        this.project = project;
 
         navigatorPanels = new SimpleToolWindowPanel[3];
         tabInfos = new TabInfo[3];
@@ -109,6 +98,7 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
                 WindowFactory.updateTitle(project, "No login");
             }
         });
+
         MessageBusConnection messageBusConnection = ApplicationManager.getApplication().getMessageBus().connect(this);
         messageBusConnection.subscribe(LoginNotifier.TOPIC, new LoginNotifier() {
             @Override
@@ -120,7 +110,6 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
                 } else {
                     WindowFactory.updateTitle(project, "No login");
                 }
-
             }
 
             @Override
@@ -149,9 +138,6 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
                 Disposer.register(this, (Disposable) n);
             }
         }
-
-        NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.put(id, this);
-
     }
 
     public void toggle() {
@@ -166,23 +152,7 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
 
     @NotNull
     public User getUser() {
-        Config config = PersistentConfig.getInstance().getInitConfig();
-        if (config == null) {
-            return new User();
-        } else if (userCache.containsKey(config.getUrl())) {
-            return userCache.get(config.getUrl());
-        } else {
-            String otherKey = NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.getOtherKey(id);
-            if (otherKey == null || !((NavigatorTabsPanel) NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.get(otherKey)).userCache.containsKey(config.getUrl())) {
-                User user = QuestionManager.getUser();
-                userCache.put(config.getUrl(), user);
-                return user;
-            } else {
-                User user = ((NavigatorTabsPanel) NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.get(otherKey)).userCache.get(config.getUrl());
-                userCache.put(config.getUrl(), user);
-                return user;
-            }
-        }
+        return UserContext.getInstance(project).getUser();
     }
 
     @Override
@@ -202,13 +172,11 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
                 return ((NavigatorPanelAction) panel).getNavigatorAction();
             }
         }
-
         return super.getData(dataId);
     }
 
     @Override
     public void dispose() {
-        NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.remove(id);
         for (SimpleToolWindowPanel navigatorPanel : navigatorPanels) {
             if (navigatorPanel != null && navigatorPanel instanceof Disposable) {
                 ((Disposable) navigatorPanel).dispose();
@@ -217,8 +185,9 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
     }
 
     public static synchronized void loadUser(boolean login) {
-        User user = null;
+        User user;
         if (login) {
+            user = null;
             for (int i = 0; i <= 50; i++) {
                 user = QuestionManager.getUser();
                 if (!user.isSignedIn()) {
@@ -236,36 +205,8 @@ public class NavigatorTabsPanel extends SimpleToolWindowPanel implements Disposa
         } else {
             user = new User();
         }
-        Collection<NavigatorTabsPanel> collection = NAVIGATOR_TABS_PANEL_DISPOSABLE_MAP.values();
-        for (NavigatorTabsPanel navigatorTabsPanel : collection) {
-            navigatorTabsPanel.userCache.put(URLUtils.getLeetcodeHost(), user);
-        }
-    }
-
-    public static class DisposableMap<K, V> extends HashMap implements Disposable {
-        @Override
-        public synchronized Object put(Object key, Object value) {
-            return super.put(key, value);
-        }
-
-        public synchronized K getOtherKey(K key) {
-            K otherKey = null;
-            for (Object k : this.keySet()) {
-                if (!k.equals(key)) {
-                    otherKey = key;
-                    break;
-                }
-            }
-            return otherKey;
-        }
-
-        @Override
-        public void dispose() {
-            for (Object value : values()) {
-                if (value instanceof Disposable) {
-                    ((Disposable) value).dispose();
-                }
-            }
+        for (Project project : ProjectManager.getInstance().getOpenProjects()) {
+            UserContext.getInstance(project).setUser(URLUtils.getLeetcodeHost(), user);
         }
     }
 }

@@ -8,7 +8,7 @@ import com.shuzijun.leetcode.plugin.model.Graphql;
 import com.shuzijun.leetcode.plugin.model.HttpRequest;
 import com.shuzijun.leetcode.plugin.model.Session;
 import com.shuzijun.leetcode.plugin.utils.*;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
+import com.shuzijun.leetcode.plugin.setting.UserContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,8 +40,13 @@ public class SessionManager {
             defSession.setMedium(jsonObject.getJSONObject("solvedPerDifficulty").getInteger("Medium"));
             defSession.setHard(jsonObject.getJSONObject("solvedPerDifficulty").getInteger("Hard"));
             if (URLUtils.isCn()){
+                String userSlug = UserContext.getInstance(project).getUser().getUserSlug();
+                if (userSlug == null || userSlug.isEmpty()) {
+                    sessionList.add(defSession);
+                    return sessionList;
+                }
                 HttpResponse sessionHttpResponse = Graphql.builder().cn(URLUtils.isCn()).operationName("userSessionProgress")
-                        .variables("userSlug", WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser().getUserSlug())
+                        .variables("userSlug", userSlug)
                         .cacheParam(defSession.getName())
                         .cache(cache)
                         .request();

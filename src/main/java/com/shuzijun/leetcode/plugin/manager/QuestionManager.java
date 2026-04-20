@@ -11,7 +11,7 @@ import com.shuzijun.leetcode.plugin.model.*;
 import com.shuzijun.leetcode.plugin.setting.PersistentConfig;
 import com.shuzijun.leetcode.plugin.utils.*;
 import com.shuzijun.leetcode.plugin.utils.doc.CleanMarkdown;
-import com.shuzijun.leetcode.plugin.window.WindowFactory;
+import com.shuzijun.leetcode.plugin.setting.UserContext;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -32,7 +32,7 @@ public class QuestionManager {
 
     public static PageInfo<QuestionView> getQuestionViewList(Project project, PageInfo<QuestionView> pageInfo) {
         boolean isPremium = false;
-        User user = WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser();
+        User user = UserContext.getInstance(project).getUser();
         if (user != null) {
             isPremium = user.isPremium();
         }
@@ -40,7 +40,7 @@ public class QuestionManager {
         HttpResponse response = Graphql.builder().cn(URLUtils.isCn()).operationName("problemsetQuestionList")
                 .variables("categorySlug", pageInfo.getCategorySlug()).variables("skip", pageInfo.getSkip())
                 .variables("limit", pageInfo.getPageSize()).variables("filters", pageInfo.getFilters())
-                .cacheParam(WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser().getUsername()).request();
+                .cacheParam(UserContext.getInstance(project).getUser().getUsername()).request();
         if (response.getStatusCode() == 200) {
             List<QuestionView> questionList = parseQuestion(response.getBody(), isPremium);
 
@@ -63,7 +63,7 @@ public class QuestionManager {
 
     public static List<QuestionView> getQuestionAllService(Project project, boolean reset) {
         Boolean isPremium = false;
-        User user = WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser();
+        User user = UserContext.getInstance(project).getUser();
         if (user != null) {
             isPremium = user.isPremium();
         }
@@ -72,7 +72,7 @@ public class QuestionManager {
             synchronized (key.intern()) {
                 if (questionAllCache.getIfPresent(URLUtils.getLeetcodeHost()) == null || reset) {
                     HttpResponse response = Graphql.builder().cn(URLUtils.isCn()).operationName("allQuestions")
-                            .cacheParam(WindowFactory.getDataContext(project).getData(DataKeys.LEETCODE_PROJECTS_TABS).getUser().getUsername()).request();
+                            .cacheParam(UserContext.getInstance(project).getUser().getUsername()).request();
                     if (response.getStatusCode() == 200) {
                         List<QuestionView> questionViews = new ArrayList<>();
 

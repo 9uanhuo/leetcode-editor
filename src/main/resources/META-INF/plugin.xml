@@ -30,6 +30,8 @@
         <projectService serviceImplementation="com.shuzijun.leetcode.plugin.setting.ProjectConfig"/>
         <projectService
                 serviceImplementation="com.shuzijun.leetcode.plugin.setting.StatisticsData"/>
+        <projectService
+                serviceImplementation="com.shuzijun.leetcode.plugin.setting.UserContext"/>
         <applicationConfigurable groupId="tools" key="configurable.leetcode.displayName"
                                  id="leetcode.id" instance="com.shuzijun.leetcode.plugin.setting.SettingConfigurable"/>
         <statusBarWidgetFactory id="leetcode-editor-TimerStatusBar"
