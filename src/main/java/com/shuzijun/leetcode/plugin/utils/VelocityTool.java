@@ -12,7 +12,7 @@ import org.apache.commons.lang3.time.DateFormatUtils;
 import java.util.Date;
 
 /**
- * Provide static tool class, StringUtils document reference <a href="https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html">doc</a><br>
+ * Provide a static tool class, StringUtils document reference <a href="https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html">doc</a><br>
  * 提供的静态工具类，StringUtils文档参考<a href="https://commons.apache.org/proper/commons-lang/apidocs/org/apache/commons/lang3/StringUtils.html">doc</a>
  *
  * @author shuzijun

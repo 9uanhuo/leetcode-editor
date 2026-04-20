@@ -1,9 +1,18 @@
 package com.shuzijun.leetcode.plugin.editor.converge;
 
 import com.intellij.icons.AllIcons;
-import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
-import com.intellij.openapi.fileEditor.*;
+import com.intellij.openapi.application.ReadAction;
+import com.intellij.openapi.fileEditor.FileEditor;
+import com.intellij.openapi.fileEditor.FileEditorLocation;
+import com.intellij.openapi.fileEditor.FileEditorProvider;
+import com.intellij.openapi.fileEditor.FileEditorState;
+import com.intellij.openapi.fileEditor.SplitEditorToolbar;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.util.UserDataHolderBase;
@@ -27,13 +36,13 @@ import com.shuzijun.leetcode.plugin.model.Question;
 import com.shuzijun.leetcode.plugin.model.Submission;
 import com.shuzijun.leetcode.plugin.utils.FileEditorProviderReflection;
 import com.shuzijun.leetcode.plugin.window.dialog.SubmissionsPanel;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -42,6 +51,8 @@ import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.util.List;
+
+import javax.swing.*;
 
 import static com.intellij.openapi.actionSystem.ActionPlaces.TEXT_EDITOR_WITH_PREVIEW;
 
@@ -187,7 +198,7 @@ public class SubmissionsPreview extends UserDataHolderBase implements FileEditor
         } else {
             VirtualFile vf = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file);
             FileEditorProvider[] editorProviders = FileEditorProviderReflection.getProviders(project, vf);
-            FileEditor newEditor = editorProviders[0].createEditor(project, vf);
+            FileEditor newEditor = ReadAction.compute(() -> editorProviders[0].createEditor(project, vf));
             if (newEditor == fileEditor) {
                 return;
             }

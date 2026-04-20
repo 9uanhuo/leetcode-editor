@@ -4,7 +4,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 plugins {
     id("java") // Java support
     alias(libs.plugins.kotlin) // Kotlin support
-    alias(libs.plugins.intelliJPlatform) version "2.11.0" // IntelliJ Platform Gradle Plugin
+    alias(libs.plugins.intelliJPlatform) // IntelliJ Platform Gradle Plugin
     alias(libs.plugins.changelog) // Gradle Changelog Plugin
 }
 
@@ -30,18 +30,22 @@ repositories {
 
 // Dependencies are managed with Gradle version catalog - read more: https://docs.gradle.org/current/userguide/platforms.html#sub:version-catalog
 dependencies {
-    api("com.shuzijun:lc-sdk:0.0.3")
-    api("com.alibaba:fastjson:1.2.47")
-    api("org.jsoup:jsoup:1.11.3")
-    api("io.sentry:sentry:1.7.9") {
+    api("com.shuzijun:lc-sdk:0.0.3") {
+        exclude(module = "commons-io", group = "commons-io")
+        exclude(module = "okhttp", group = "com.squareup.okhttp3")
+    }
+    implementation("com.squareup.okhttp3:okhttp:5.3.2")
+    implementation("commons-io:commons-io:2.21.0")
+    api("com.alibaba:fastjson:1.2.83")
+    api("org.jsoup:jsoup:1.22.1")
+    api("io.sentry:sentry:8.39.1") {
         exclude(module = "slf4j-api")
     }
     api("org.scilab.forge:jlatexmath:1.0.7")
-    api("org.apache.commons:commons-lang3:3.9")
-    api("com.vladsch.flexmark:flexmark:0.62.2")
-    api("com.vladsch.flexmark:flexmark-ext-attributes:0.62.2")
+    api("org.apache.commons:commons-lang3:3.20.0")
+    api("com.vladsch.flexmark:flexmark:0.64.8")
+    api("com.vladsch.flexmark:flexmark-ext-attributes:0.64.8")
     api("io.github.biezhi:TinyPinyin:2.0.3.RELEASE")
-    // api(fileTree(mapOf("dir" to "src/main/resources/lib", "include" to listOf("*.jar"))))
 
     testImplementation(libs.junit)
     testImplementation(libs.opentest4j)
