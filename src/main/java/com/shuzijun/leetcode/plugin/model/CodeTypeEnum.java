@@ -7,14 +7,14 @@ import java.util.Map;
  * @author shuzijun
  */
 public enum CodeTypeEnum {
-    JAVA("Java", "java", ".java", "//", "/**\n%s\n*/"),
-    PYTHON("Python", "python", ".py", "# ","\"\"\"\n%s\n\"\"\""),
+    JAVA("Java", "java", ".java", "//", "/**\n%s\n*/", " * "),
+    PYTHON("Python", "python", ".py", "# ", "\"\"\"\n%s\n\"\"\""),
     CPP("C++", "cpp", ".cpp", "//", "/**\n%s\n*/"),
-    PYTHON3("Python3", "python3", ".py", "# ","\"\"\"\n%s\n\"\"\""),
+    PYTHON3("Python3", "python3", ".py", "# ", "\"\"\"\n%s\n\"\"\""),
     C("C", "c", ".c", "//", "/**\n%s\n*/"),
     CSHARP("C#", "csharp", ".cs", "//", "/**\n%s\n*/"),
     JAVASCRIPT("JavaScript", "javascript", ".js", "//", "/**\n%s\n*/"),
-    RUBY("Ruby", "ruby", ".rb", "#","=begin\n%s\n=end"),
+    RUBY("Ruby", "ruby", ".rb", "#", "=begin\n%s\n=end"),
     SWIFT("Swift", "swift", ".swift", "///", "/**\n%s\n*/"),
     GO("Go", "golang", ".go", "//", "/**\n%s\n*/"),
     SCALA("Scala", "scala", ".scala", "//", "/**\n%s\n*/"),
@@ -26,7 +26,7 @@ public enum CodeTypeEnum {
     Racket("Racket", "racket", ".rkt", ";", "#|\n%s\n|#"),
     Erlang("Erlang", "erlang", ".erl", "%", ""),
     Elixir("Elixir", "elixir", ".ex", "#", ""),
-    BASH("Bash", "bash", ".sh", "#",": '\n%s\n'"),
+    BASH("Bash", "bash", ".sh", "#", ": '\n%s\n'"),
     MYSQL("MySQL", "mysql", ".sql", "#", "/**\n%s\n*/"),
     ORACLE("Oracle", "oraclesql", ".sql", "#", "/**\n%s\n*/"),
     MSSQLSERVER("MS SQL Server", "mssql", ".sql", "#", "/**\n%s\n*/"),
@@ -40,6 +40,7 @@ public enum CodeTypeEnum {
     private String suffix;
     private String comment;
     private String multiLineComment;
+    private String multiLineCommentPrefix;
 
     CodeTypeEnum(String type, String langSlug, String suffix, String comment, String multiLineComment) {
         this.type = type;
@@ -47,6 +48,15 @@ public enum CodeTypeEnum {
         this.suffix = suffix;
         this.comment = comment;
         this.multiLineComment = multiLineComment;
+    }
+
+    CodeTypeEnum(String type, String langSlug, String suffix, String comment, String multiLineComment, String multiLineCommentPrefix) {
+        this.type = type;
+        this.langSlug = langSlug;
+        this.suffix = suffix;
+        this.comment = comment;
+        this.multiLineComment = multiLineComment;
+        this.multiLineCommentPrefix = multiLineCommentPrefix;
     }
 
     private static Map<String, CodeTypeEnum> MAP = new HashMap<String, CodeTypeEnum>();
@@ -85,5 +95,9 @@ public enum CodeTypeEnum {
 
     public String getMultiLineComment() {
         return multiLineComment;
+    }
+
+    public String getMultiLineCommentPrefix() {
+        return multiLineCommentPrefix;
     }
 }

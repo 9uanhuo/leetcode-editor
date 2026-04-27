@@ -42,31 +42,26 @@ public class VelocityTool extends StringUtils {
         return sb.toString();
     }
 
+
     /**
-     * Adds a specified number of spaces as left padding to the beginning of each line in the input string.
+     * Prepend a prefix to each line of the given text. <br>
+     * 在给定文本的每一行前添加前缀
      *
-     * @param s      the input string to be padded; if null or empty, the method returns the input as is
-     * @param length the number of spaces to pad at the beginning of each line; if less than or equal to 0, no padding is applied
-     * @return a new string with the specified padding added to each line, or the original string if no padding was applied
+     * @param text   the text to process
+     * @param prefix the prefix to prepend to each line
+     * @return the text with prefix prepended to each line
      */
-    public static String leftPadSpacesPerRow(String s, int length) {
-        if (s == null || s.isEmpty() || length <= 0) {
-            return s;
-        }
-        String padStr = " ".repeat(length);
-        StringBuilder sb = new StringBuilder(s.length() + (length * 2));
-        boolean lineStart = true;
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            if (lineStart && ch != '\n' && ch != '\r') {
-                sb.append(padStr);
-                lineStart = false;
+    public static String prependToEachLine(String text, String prefix) {
+        String[] lines = text.split("\\R", -1);
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < lines.length; i++) {
+            if (i > 0) {
+                sb.append("\n");
             }
-            sb.append(ch);
-            if (ch == '\n' || ch == '\r') {
-                lineStart = true;
-            }
+            sb.append(prefix).append(lines[i]);
         }
+
         return sb.toString();
     }
 

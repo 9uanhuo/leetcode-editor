@@ -2,6 +2,7 @@ package com.shuzijun.leetcode.plugin.utils;
 
 import com.shuzijun.leetcode.plugin.model.CodeTypeEnum;
 import com.shuzijun.leetcode.plugin.model.Config;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jsoup.Jsoup;
 
@@ -16,13 +17,17 @@ public class CommentUtils {
     private static final Pattern subPattern = Pattern.compile("<sup>(<span.*>?)?([0-9abcdeghijklmnoprstuvwxyz\\+\\-\\*=\\(\\)\\.\\/]+)(</span>)?</sup>?");
 
     public static String createComment(String html, CodeTypeEnum codeTypeEnum, Config config) {
-        boolean isSupportMultilineComment =  config.getMultilineComment() && StringUtils.isNotBlank(codeTypeEnum.getMultiLineComment());
-        html = html.replaceAll("(\\r\\n|\\r|\\n|\\n\\r)", "\\\\n").replaceAll(" "," ");
-        if(config.getHtmlContent()) {
-            if(isSupportMultilineComment){
-                return String.format(codeTypeEnum.getMultiLineComment(),html.replaceAll("\\\\n", "\n"));
-            }else {
-               return codeTypeEnum.getComment() + html.replaceAll("\\\\n", "\n" + codeTypeEnum.getComment());
+        boolean isSupportMultilineComment = config.getMultilineComment() && StringUtils.isNotBlank(codeTypeEnum.getMultiLineComment());
+        html = html.replaceAll("(\\r\\n|\\r|\\n|\\n\\r)", "\\\\n").replaceAll(" ", " ");
+        if (config.getHtmlContent()) {
+            if (isSupportMultilineComment) {
+                String multiLineComment = html.replaceAll("\\\\n", "\n");
+                if (StringUtils.isNotBlank(codeTypeEnum.getMultiLineCommentPrefix())) {
+                    multiLineComment = VelocityTool.prependToEachLine(multiLineComment, codeTypeEnum.getMultiLineCommentPrefix());
+                }
+                return String.format(codeTypeEnum.getMultiLineComment(), multiLineComment);
+            } else {
+                return codeTypeEnum.getComment() + html.replaceAll("\\\\n", "\n" + codeTypeEnum.getComment());
             }
         }
         Matcher subMatcher = subPattern.matcher(html);
@@ -30,7 +35,7 @@ public class CommentUtils {
             String subStr = SuperscriptUtils.getSup(subMatcher.group(2));
             html = html.replace(subMatcher.group(), "<sup>" + subStr + "</sup>");
         }
-        String comment = isSupportMultilineComment?"":codeTypeEnum.getComment();
+        String comment = isSupportMultilineComment ? "" : codeTypeEnum.getComment();
         String body = comment + Jsoup.parse(html).text().replaceAll("\\\\n", "\n" + comment);
         String[] lines = body.split("\n");
         StringBuilder sb = new StringBuilder();
@@ -53,7 +58,7 @@ public class CommentUtils {
                 sb.append(lineBuilder).append("\n");
             }
         }
-        return isSupportMultilineComment?String.format(codeTypeEnum.getMultiLineComment(),sb):sb.toString();
+        return isSupportMultilineComment ? String.format(codeTypeEnum.getMultiLineComment(), sb) : sb.toString();
     }
 
     public static String createSubmissions(String html) {
